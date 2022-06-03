@@ -1,0 +1,38 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model DeviceList {
+    img         String
+    description String
+    price       Int
+    name        String
+    user        DeviceOnUser[]
+    id          String         @id @default(uuid())
+    countInCart Int            @default(0)
+    count       Int?
+}
+
+model User {
+    id       Int            @id @default(autoincrement())
+    name     String?
+    email    String         @unique
+    password String
+    cart     DeviceOnUser[]
+}
+
+model DeviceOnUser {
+    device     DeviceList @relation(fields: [deviceId], references: [id])
+    deviceId   String // relation scalar field (used in the `@relation` attribute above)
+    user       User       @relation(fields: [userId], references: [id])
+    userId     Int // relation scalar field (used in the `@relation` attribute above)
+    assignedAt DateTime   @default(now())
+    assignedBy String
+
+    @@id([deviceId, userId])
+}

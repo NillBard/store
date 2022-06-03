@@ -1,0 +1,5 @@
+#!/bin/bash
+docker stop store-db || true &&\ 
+    docker rm store-db || true &&\   
+    docker run -d --name store-db -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DATABASE=store postgres:14-alpine &&\
+npx prisma generate && npx prisma db push && node ./prisma/seed.js
